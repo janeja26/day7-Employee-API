@@ -53,7 +53,7 @@ class EmployeeControllerTest {
 
 
     @Test
-    void createEmployee_ShouldReturn201AndBody() throws Exception {
+    void createEmployee_Should_Return_201_And_Body() throws Exception {
         mockMvc.perform(post("/employees")
                         .contentType("application/json")
                         .content(employeeJson("Lily", 20, "Female", 8000)))

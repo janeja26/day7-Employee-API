@@ -51,8 +51,6 @@ public class EmployeeController {
                     .filter(e -> e.getGender() != null && e.getGender().equalsIgnoreCase(gender))
                     .collect(Collectors.toList());
         }
-
-
         return ResponseEntity.ok(list);
     }
 
