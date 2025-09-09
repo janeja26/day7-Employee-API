@@ -114,4 +114,25 @@ class EmployeeControllerTest {
 
 
 
+
+    @Test
+    void update_Employee_Should_Update_Age_And_Salary_Only() throws Exception {
+        long id = createEmployeeAndReturnId("Lily", 20, "Female", 8000);
+
+        Map<String, Object> patch = new HashMap<>();
+        patch.put("age", 30);
+        patch.put("salary", 12000.5);
+
+        mockMvc.perform(put("/employees/{id}", id)
+                        .contentType("application/json")
+                        .content(om.writeValueAsString(patch)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is((int) id)))
+                .andExpect(jsonPath("$.name", is("Lily")))      // name 未变
+                .andExpect(jsonPath("$.gender", is("Female")))  // gender 未变
+                .andExpect(jsonPath("$.age", is(30)))
+                .andExpect(jsonPath("$.salary", is(12000.5)));
+    }
+
+
 }
