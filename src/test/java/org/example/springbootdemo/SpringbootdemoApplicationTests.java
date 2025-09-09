@@ -128,10 +128,20 @@ class EmployeeControllerTest {
                         .content(om.writeValueAsString(patch)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is((int) id)))
-                .andExpect(jsonPath("$.name", is("Lily")))      // name 未变
-                .andExpect(jsonPath("$.gender", is("Female")))  // gender 未变
+                .andExpect(jsonPath("$.name", is("Lily")))
+                .andExpect(jsonPath("$.gender", is("Female")))
                 .andExpect(jsonPath("$.age", is(30)))
                 .andExpect(jsonPath("$.salary", is(12000.5)));
+    }
+
+
+    @Test
+    void delete_Employee_Should_Return_204_And_Then_404() throws Exception {
+        long id = createEmployeeAndReturnId("Tom", 25, "Male", 9000);
+        mockMvc.perform(delete("/employees/{id}", id))
+                .andExpect(status().isNoContent());
+        mockMvc.perform(get("/employees/{id}", id))
+                .andExpect(status().isNotFound());
     }
 
 
