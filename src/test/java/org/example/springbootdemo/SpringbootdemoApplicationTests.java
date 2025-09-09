@@ -87,5 +87,18 @@ class EmployeeControllerTest {
     }
 
 
+    @Test
+    void listEmployees_Should_Filter_By_Gender_Case_Insensitive() throws Exception {
+        createEmployeeAndReturnId("A", 21, "Male", 6000);
+        createEmployeeAndReturnId("B", 22, "Female", 7000);
+        createEmployeeAndReturnId("C", 23, "male", 8000);
+
+        mockMvc.perform(get("/employees").param("gender", "MALE"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[*].gender", everyItem(anyOf(is("Male"), is("male")))));
+    }
+
+
 
 }
