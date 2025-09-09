@@ -113,8 +113,6 @@ class EmployeeControllerTest {
     }
 
 
-
-
     @Test
     void update_Employee_Should_Update_Age_And_Salary_Only() throws Exception {
         long id = createEmployeeAndReturnId("Lily", 20, "Female", 8000);
@@ -142,6 +140,34 @@ class EmployeeControllerTest {
                 .andExpect(status().isNoContent());
         mockMvc.perform(get("/employees/{id}", id))
                 .andExpect(status().isNotFound());
+    }
+
+
+    @Test
+    void list_Employees_Should_Paginate_When_Page_And_Size_Provided() throws Exception {
+        createEmployeeAndReturnId("E1", 21, "Male", 6000);
+        createEmployeeAndReturnId("E2", 22, "Female", 7000);
+        createEmployeeAndReturnId("E3", 23, "Male", 8000);
+        createEmployeeAndReturnId("E4", 24, "Female", 9000);
+
+        // page=1,size=2 -> 返回前两条（id 升序）
+        mockMvc.perform(get("/employees").param("page", "1").param("size", "2"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].name", is("E1")))
+                .andExpect(jsonPath("$[1].name", is("E2")));
+
+        // page=2,size=2 -> 返回第 3、4 条
+        mockMvc.perform(get("/employees").param("page", "2").param("size", "2"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].name", is("E3")))
+                .andExpect(jsonPath("$[1].name", is("E4")));
+
+        // 超页 -> 空数组
+        mockMvc.perform(get("/employees").param("page", "3").param("size", "2"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
     }
 
 
