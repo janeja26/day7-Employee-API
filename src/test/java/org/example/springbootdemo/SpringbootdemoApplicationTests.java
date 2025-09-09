@@ -100,5 +100,18 @@ class EmployeeControllerTest {
     }
 
 
+    @Test
+    void listEmployees_ShouldReturnAll_WhenNoFilter() throws Exception {
+        createEmployeeAndReturnId("A", 21, "Male", 6000);
+        createEmployeeAndReturnId("B", 22, "Female", 7000);
+
+        mockMvc.perform(get("/employees"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].name", is("A")))
+                .andExpect(jsonPath("$[1].name", is("B")));
+    }
+
+
 
 }
