@@ -73,6 +73,16 @@ public class EmployeeController {
 
 
 
+    @DeleteMapping("/employees/{id}")
+    public ResponseEntity<Void> deleteEmployee(@PathVariable long id) {
+        Employee removed = employees.remove(id);
+        if (removed == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.noContent().build();
+    }
+
+
 
     public static class Employee {
         private long id;
