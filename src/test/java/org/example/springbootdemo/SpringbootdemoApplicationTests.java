@@ -66,5 +66,19 @@ class EmployeeControllerTest {
     }
 
 
+    @Test
+    void getEmployeeById_Should_Return_Employee_When_Exists() throws Exception {
+        long id = createEmployeeAndReturnId("Tom", 25, "Male", 9000);
+
+        mockMvc.perform(get("/employees/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is((int) id)))
+                .andExpect(jsonPath("$.name", is("Tom")))
+                .andExpect(jsonPath("$.age", is(25)))
+                .andExpect(jsonPath("$.gender", is("Male")))
+                .andExpect(jsonPath("$.salary", is(9000.0)));
+    }
+
+
 
 }
