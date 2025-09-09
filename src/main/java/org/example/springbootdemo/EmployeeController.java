@@ -55,6 +55,22 @@ public class EmployeeController {
     }
 
 
+    @PutMapping("/employees/{id}")
+    public ResponseEntity<Employee> updateEmployee(@PathVariable long id,
+                                                   @RequestBody UpdateEmployeeRequest updateRequest) {
+        Employee existing = employees.get(id);
+        if (existing == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        if (updateRequest.getAge() != null) {
+            existing.setAge(updateRequest.getAge());
+        }
+        if (updateRequest.getSalary() != null) {
+            existing.setSalary(updateRequest.getSalary());
+        }
+        return ResponseEntity.ok(existing);
+    }
+
 
 
 
@@ -91,5 +107,16 @@ public class EmployeeController {
         public void setSalary(double salary) { this.salary = salary; }
     }
 
+
+    public static class UpdateEmployeeRequest {
+        private Integer age;
+        private Double salary;
+
+        public Integer getAge() { return age; }
+        public void setAge(Integer age) { this.age = age; }
+
+        public Double getSalary() { return salary; }
+        public void setSalary(Double salary) { this.salary = salary; }
+    }
 
 }
