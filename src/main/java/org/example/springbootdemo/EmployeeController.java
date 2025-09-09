@@ -10,6 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
+
+
 @RestController
 @RequestMapping
 public class EmployeeController {
@@ -40,7 +42,10 @@ public class EmployeeController {
 
     @GetMapping("/employees")
     public ResponseEntity<List<Employee>> listEmployees(
-            @RequestParam(required = false) String gender) {
+            @RequestParam(required = false) String gender,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size
+    ) {
         List<Employee> list = employees.values().stream()
                 .sorted(Comparator.comparingLong(Employee::getId))
                 .collect(Collectors.toList());
@@ -51,6 +56,20 @@ public class EmployeeController {
                     .filter(e -> e.getGender() != null && e.getGender().equalsIgnoreCase(gender))
                     .collect(Collectors.toList());
         }
+
+        // 仅当同时提供 page & size 时开启分页
+        if (page != null && size != null) {
+            if (page < 1 || size < 1) {
+                return ResponseEntity.badRequest().build();
+            }
+            int startIndex = (page - 1) * size;
+            int endIndex = Math.min(startIndex + size, list.size());
+            if (startIndex >= list.size()) {
+                return ResponseEntity.ok(Collections.emptyList());
+            }
+            list = list.subList(startIndex, endIndex);
+        }
+
         return ResponseEntity.ok(list);
     }
 
