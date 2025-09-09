@@ -80,5 +80,12 @@ class EmployeeControllerTest {
     }
 
 
+    @Test
+    void getEmployeeById_Should_Return_404_When_Not_Exists() throws Exception {
+        mockMvc.perform(get("/employees/{id}", 9999))
+                .andExpect(status().isNotFound());
+    }
+
+
 
 }
