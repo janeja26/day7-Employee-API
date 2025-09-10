@@ -3,7 +3,6 @@ package org.example.springbootdemo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,6 +25,8 @@ class EmployeeControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper om;
+
+
 
     private String employeeJson(String name, int age, String gender, double salary) throws Exception {
         Map<String, Object> body = new HashMap<>();
@@ -93,7 +94,7 @@ class EmployeeControllerTest {
         createEmployeeAndReturnId("B", 22, "Female", 7000);
         createEmployeeAndReturnId("C", 23, "male", 8000);
 
-        mockMvc.perform(get("/employees").param("gender", "MALE"))
+        mockMvc.perform(get("/employees").param("gender", "Male"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[*].gender", everyItem(anyOf(is("Male"), is("male")))));
@@ -169,6 +170,8 @@ class EmployeeControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
     }
+
+
 
 
 }
