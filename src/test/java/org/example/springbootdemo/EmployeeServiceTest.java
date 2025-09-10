@@ -12,8 +12,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
@@ -77,7 +80,7 @@ public class EmployeeServiceTest {
         });
 
         Employee result = employeeService.createEmployee(validEmployee);
-      //  assertTrue(result.isActive());
+      assertTrue(result.isActive());
     }
 
 
@@ -96,7 +99,22 @@ public class EmployeeServiceTest {
 
         Employee result = employeeService.createEmployee(validEmployee);
         assertNotNull(result);
-       // assertTrue(result.isActive());
+        assertTrue(result.isActive());
     }
+
+    @Test
+    public void testDeleteEmployee_SetsActiveToFalse() {
+
+        Employee existingEmployee = new Employee();
+        existingEmployee.setId(1L);
+        existingEmployee.setName("赵六");
+        existingEmployee.setActive(true);
+
+        when(employeeRepository.findById(1L)).thenReturn(Optional.of(existingEmployee));
+        employeeService.deleteEmployee(1L);
+        assertFalse(existingEmployee.isActive());
+        verify(employeeRepository).update(existingEmployee);
+    }
+
 
 }

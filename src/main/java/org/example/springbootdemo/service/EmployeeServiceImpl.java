@@ -35,6 +35,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employee.getAge() >= 30 && employee.getSalary() < 20000) {
             throw new InvalidAgeException("30岁及以上员工薪资不能低于20000");
         }
+        employee.setActive(true);
 
         return employeeRepository.save(employee);
     }
@@ -92,9 +93,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void deleteEmployee(Long id) {
-        if (!employeeRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Employee with id " + id + " not found");
-        }
-        employeeRepository.deleteById(id);
+        Employee existingEmployee = getEmployeeById(id);
+        // 删除操作仅设置active状态为false
+        existingEmployee.setActive(false);
+        employeeRepository.update(existingEmployee);
     }
 }
