@@ -2,6 +2,7 @@ package org.example.springbootdemo;
 
 import org.example.springbootdemo.controller.EmployeeController;
 import org.example.springbootdemo.domain.Employee;
+import org.example.springbootdemo.dto.UpdateEmployeeRequest;
 import org.example.springbootdemo.expection.InvalidAgeException;
 import org.example.springbootdemo.repository.EmployeeRepository;
 import org.example.springbootdemo.service.EmployeeService;
@@ -116,5 +117,21 @@ public class EmployeeServiceTest {
         verify(employeeRepository).update(existingEmployee);
     }
 
+    @Test
+    public void testUpdateActiveEmployee_Success() {
+        Employee activeEmployee = new Employee();
+        activeEmployee.setId(1L);
+        activeEmployee.setName("钱七");
+        activeEmployee.setActive(true);
+
+        when(employeeRepository.findById(1L)).thenReturn(Optional.of(activeEmployee));
+        when(employeeRepository.update(any(Employee.class))).thenReturn(activeEmployee);
+
+        UpdateEmployeeRequest request = new UpdateEmployeeRequest();
+        request.setSalary(30000.0);
+
+        Employee updated = employeeService.updateEmployee(1L, request);
+        assertEquals(30000.0, updated.getSalary());
+    }
 
 }
