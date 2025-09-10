@@ -4,6 +4,7 @@ import org.example.springbootdemo.domain.Employee;
 import org.example.springbootdemo.dto.UpdateEmployeeRequest;
 
 import org.example.springbootdemo.expection.EmployeeNotAmongLegalAgeException;
+import org.example.springbootdemo.expection.InactiveEmployeeUpdateException;
 import org.example.springbootdemo.expection.InvalidAgeException;
 import org.example.springbootdemo.expection.ResourceNotFoundException;
 import org.example.springbootdemo.repository.EmployeeRepository;
@@ -77,6 +78,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Employee updateEmployee(Long id, UpdateEmployeeRequest updateRequest) {
         Employee existingEmployee = getEmployeeById(id);
 
+        if (!existingEmployee.isActive()) {
+            throw new InactiveEmployeeUpdateException("不能更新已离职员工信息");
+        }
         if (updateRequest.getAge() != null) {
             int newAge = updateRequest.getAge();
             if (newAge < 18 || newAge > 65) {

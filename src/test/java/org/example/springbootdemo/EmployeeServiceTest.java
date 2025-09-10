@@ -3,6 +3,7 @@ package org.example.springbootdemo;
 import org.example.springbootdemo.controller.EmployeeController;
 import org.example.springbootdemo.domain.Employee;
 import org.example.springbootdemo.dto.UpdateEmployeeRequest;
+import org.example.springbootdemo.expection.InactiveEmployeeUpdateException;
 import org.example.springbootdemo.expection.InvalidAgeException;
 import org.example.springbootdemo.repository.EmployeeRepository;
 import org.example.springbootdemo.service.EmployeeService;
@@ -132,6 +133,23 @@ public class EmployeeServiceTest {
 
         Employee updated = employeeService.updateEmployee(1L, request);
         assertEquals(30000.0, updated.getSalary());
+    }
+
+    @Test
+    public void testUpdateInactiveEmployee_ThrowsException() {
+        Employee inactiveEmployee = new Employee();
+        inactiveEmployee.setId(1L);
+        inactiveEmployee.setName("孙八");
+        inactiveEmployee.setActive(false);
+
+        when(employeeRepository.findById(1L)).thenReturn(Optional.of(inactiveEmployee));
+
+        UpdateEmployeeRequest request = new UpdateEmployeeRequest();
+        request.setSalary(30000.0);
+
+        assertThrows(InactiveEmployeeUpdateException.class, () -> {
+            employeeService.updateEmployee(1L, request);
+        });
     }
 
 }
