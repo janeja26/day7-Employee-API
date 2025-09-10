@@ -8,6 +8,7 @@ public class Employee implements Serializable {
     private int age;
     private String gender;
     private double salary;
+    private boolean active;
 
     //public Employee() {}
 
@@ -34,4 +35,7 @@ public class Employee implements Serializable {
 
     public double getSalary() { return salary; }
     public void setSalary(double salary) { this.salary = salary; }
+
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
 }

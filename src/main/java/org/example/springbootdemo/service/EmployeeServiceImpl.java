@@ -4,6 +4,7 @@ import org.example.springbootdemo.domain.Employee;
 import org.example.springbootdemo.dto.UpdateEmployeeRequest;
 
 import org.example.springbootdemo.expection.EmployeeNotAmongLegalAgeException;
+import org.example.springbootdemo.expection.InvalidAgeException;
 import org.example.springbootdemo.expection.ResourceNotFoundException;
 import org.example.springbootdemo.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (age < 18 || age > 65) {
             throw new EmployeeNotAmongLegalAgeException("员工年龄必须在18-65岁之间");
         }
+
+        if (employee.getAge() >= 30 && employee.getSalary() < 20000) {
+            throw new InvalidAgeException("30岁及以上员工薪资不能低于20000");
+        }
+
         return employeeRepository.save(employee);
     }
 
